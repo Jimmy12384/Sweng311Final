@@ -7,12 +7,10 @@ class Main {
 }
 class Editor implements Serializable{
 	private String formattedText = "";
-	private boolean morseCode;
 	public Editor(){
-		this.morseCode = false;
-	}
-	public Editor(boolean morseCode){
-		this.morseCode = morseCode;
+		System.out.println("Welcome to ViM-proved!");
+		System.out.println("Group:\tJames Fennelly\n\t\tLogan Jones\n\t\tJake Fisher");
+		System.out.println("All available commands are listed in :h\n--------------------------------------------------");
 	}
 	public String nextLines() {
 		String inputStr = "";
@@ -20,15 +18,11 @@ class Editor implements Serializable{
 		while(!option.equals("quit")) {
 			Scanner keyboard = new Scanner(System.in);
 			inputStr = keyboard.nextLine();
-			if(inputStr.matches("##[A-Za-z ]+##")) {
-				option = inputStr.substring(2,inputStr.indexOf("##",3)).toLowerCase();
-				if(option.equals("quit")) {
-					if(this.morseCode) {
-						keyboard.close();
-						return this.formattedText;
-					}
+			if(inputStr.matches(":[A-Za-z!]+")) {
+				option = inputStr.substring(1).toLowerCase();
+				if(option.equals("q")) {	//quit, ask to save
 					System.exit(0);
-				} else if(option.equals("replace")) {
+				} else if(option.equals("r")) {
 					System.out.print("What word would you like to replace: ");
 					String oldWord = keyboard.nextLine();
 					System.out.print("What is the word to replace it with: ");
