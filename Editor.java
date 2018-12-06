@@ -13,26 +13,14 @@ class Editor implements Serializable{
 		System.out.println("All available commands are listed in :h\n--------------------------------------------------");
 	}
 	public String nextLines() {
-		String inputStr = "";
+		String inputStr;
 		String option = "";
-		while(!option.equals("quit")) {
+		while(!option.equals("q")) {
 			Scanner keyboard = new Scanner(System.in);
 			inputStr = keyboard.nextLine();
 			if(inputStr.matches(":[A-Za-z!]+")) {
 				option = inputStr.substring(1).toLowerCase();
-				if(option.equals("q")) {	//quit, ask to save
-					System.exit(0);
-				} else if(option.equals("r")) {
-					System.out.print("What word would you like to replace: ");
-					String oldWord = keyboard.nextLine();
-					System.out.print("What is the word to replace it with: ");
-					String newWord = keyboard.nextLine();
-					this.formattedText = this.formattedText.replace(oldWord, newWord);
-					System.out.println("--------------------------------------------------");
-					System.out.println("---------------## Done Replacing ##---------------");
-					System.out.println("--------------------------------------------------");
-					System.out.print(this.formattedText);
-				} else if(option.equals("delete all text")) {
+				if(option.equals("delete all text")) {
 					this.formattedText = "";
 					try {
 						Runtime.getRuntime().exec("cls");
