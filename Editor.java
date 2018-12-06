@@ -1,56 +1,43 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
+
 class Main {
 	public static void main(String args[]) {
-		new Editor().nextLines();
+		new Editor();
 	}
 }
 class Editor implements Serializable{
 	private String formattedText = "";
+	ArrayList<Commands> commands = new ArrayList<>();
 	public Editor(){
+		boolean keepGoing = true;
 		System.out.println("Welcome to ViM-proved!");
 		System.out.println("Group:\tJames Fennelly\n\t\tLogan Jones\n\t\tJake Fisher");
 		System.out.println("All available commands are listed in :h\n--------------------------------------------------");
-	}
-	public String nextLines() {
-		String inputStr;
-		String option = "";
-		while(!option.equals("q")) {
-			Scanner keyboard = new Scanner(System.in);
-			inputStr = keyboard.nextLine();
-			if(inputStr.matches(":[A-Za-z!]+")) {
-				option = inputStr.substring(1).toLowerCase();
-				if(option.equals("delete all text")) {
-					this.formattedText = "";
-					try {
-						Runtime.getRuntime().exec("cls");
-					} catch (IOException e) {
-						System.out.println(new String(new char[50]).replace("\0", "\r\n"));
-					}
-				} else if(option.equals("save to a file")) {
-					System.out.print("Enter file name: ");
-					Scanner sc = new Scanner(System.in);
-					String fileName = sc.nextLine();
-		            
-		            try {
-		            	FileOutputStream fout = new FileOutputStream(fileName);
-		            	ObjectOutputStream oos = new ObjectOutputStream(fout);
-		    			oos.writeObject(this);
-						System.out.println("--------------------------------------------------");
-						System.out.println("----------------## Save Complete ##---------------");
-						System.out.println("--------------------------------------------------");
-						oos.close();
-					} catch (IOException e) {
-						System.out.println("--------------------------------------------------");
-						System.out.println("-----------------## Save Failed ##----------------");
-						System.out.println("--------------------------------------------------");
+		commands.add(new Quit());
+		commands.add(new Save());
+		commands.add(new Replace());
+		commands.add(new Insert());
+		while(keepGoing){
+			String line = this.getText();
+			if(line.matches(":[A-Za-z!]+")){
+				String option = line.substring(1);
+				for(Commands command : commands){
+					if(command.isCommand(option)){
+						command.setText(this.formattedText);
+						this.formattedText = command.doCommand();
+						System.out.print(this.formattedText);
 					}
 				}
 			} else {
-				this.formattedText += inputStr + "\n";
+				this.formattedText += line + "\n";
 			}
 		}
-		return this.formattedText;
+
 	}
-	
+	public String getText(){
+		Scanner keyboard = new Scanner(System.in);
+		return keyboard.nextLine();
+	}
 }
