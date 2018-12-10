@@ -29,15 +29,37 @@ public abstract class Commands implements Serializable{
 
     }
 }
-class Quit extends Commands {
-    public Quit(){
-        super("q");
+class ForceQuit extends Commands {
+    public ForceQuit(){
+        super("q!");
     }
     public String[] doCommand(){
         System.exit(0);
         String[] returnArr = {this.formattedText, this.iterator + ""};  //included to prevent compiler error
         return returnArr;
-
+    }
+}
+class Quit extends Commands {
+    public Quit(){
+        super("q");
+    }
+    public String[] doCommand(){
+        System.out.print("Save file before quitting? (y/n): ");
+        Scanner sc = new Scanner(System.in);
+        String opt = sc.next();
+        switch(opt.toCharArray()[0]){
+            case 'y':
+                WriteQuit wq = new WriteQuit();
+                wq.doCommand();
+                break;
+            case 'n':
+                System.exit(0);
+                break;
+            default:
+                System.out.println("Not valid reponse, exiting command action.");
+        }
+        String[] returnArr = {this.formattedText, this.iterator + ""};  //included to prevent compiler error
+        return returnArr;
     }
 }
 class Replace extends Commands {

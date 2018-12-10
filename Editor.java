@@ -22,6 +22,7 @@ class Editor {
 		commands.add(new Replace());
 		commands.add(new Insert());
 		commands.add(new WriteQuit());
+		commands.add(new ForceQuit());
 		while(keepGoing){
 			String line = getText();
 			if(line.matches(":[A-Za-z!]+")){
