@@ -3,44 +3,49 @@ import java.util.Scanner;
 
 public abstract class Commands implements Serializable{
     private String command;
-    protected static String formattedText;
-    protected static int iterator;
-    public boolean isCommand(String opt){
+    static String formattedText;
+    static int iterator;
+    boolean isCommand(String opt){
         return opt.equals(this.command);
     }
     public abstract String[] doCommand();
-
-    public Commands(String command){
-        this.command = command;
-        this.formattedText = "";
+    public abstract String getDescription();
+    Commands(String com){
+        command = com;
+        formattedText = "";
     }
-    public void setText(String formattedText){
-        this.formattedText = formattedText;
+    void setText(String formattedTxt){
+        formattedText = formattedTxt;
     }
-    public void setIterator(int iterator){
-        this.iterator = iterator;
+    void setIterator(int i){
+        iterator = i;
     }
-    public static void clearScreen(){
+    static void clearScreen(){
         try{
             Runtime.getRuntime().exec("cls");
         } catch(IOException e){
             // do nothing
         }
-
+    }
+    public String toString(){
+       return "\t:" + this.command + "\t\t" + this.getClass().getSimpleName() + "\t\t" + this.getDescription();
     }
 }
 class ForceQuit extends Commands {
-    public ForceQuit(){
+    ForceQuit(){
         super("q!");
     }
     public String[] doCommand(){
         System.exit(0);
-        String[] returnArr = {this.formattedText, this.iterator + ""};  //included to prevent compiler error
+        String[] returnArr = {formattedText, iterator + ""};  //included to prevent compiler error
         return returnArr;
+    }
+    public String getDescription(){
+        return "Forces Program to quit";
     }
 }
 class Quit extends Commands {
-    public Quit(){
+    Quit(){
         super("q");
     }
     public String[] doCommand(){
@@ -58,12 +63,15 @@ class Quit extends Commands {
             default:
                 System.out.println("Not valid reponse, exiting command action.");
         }
-        String[] returnArr = {this.formattedText, this.iterator + ""};  //included to prevent compiler error
+        String[] returnArr = {formattedText, iterator + ""};  //included to prevent compiler error
         return returnArr;
+    }
+    public String getDescription(){
+        return "\tAsks user to save before quitting";
     }
 }
 class Replace extends Commands {
-    public Replace() {
+    Replace() {
         super("r");
     }
     public String[] doCommand(){
@@ -72,24 +80,30 @@ class Replace extends Commands {
         String oldWord = keyboard.nextLine();
         System.out.print("What is the word to replace it with: ");
         String newWord = keyboard.nextLine();
-        this.formattedText = this.formattedText.replaceFirst(oldWord, newWord);
+        formattedText = formattedText.replaceFirst(oldWord, newWord);
         System.out.println("\n\nSuccessfully Replaced.\n-----------------------------------------");
         clearScreen();
-        String[] returnArr = {this.formattedText, this.iterator + ""};
+        String[] returnArr = {formattedText, iterator + ""};
         return returnArr;
+    }
+    public String getDescription(){
+        return "\tsearches for text and replaces it";
     }
 }
 class Insert extends Commands {
-    public Insert(){
+    Insert(){
         super("i");
     }
     public String[] doCommand(){
-        String[] returnArr = {this.formattedText, this.iterator + ""};
+        String[] returnArr = {formattedText, iterator + ""};
         return returnArr;
+    }
+    public String getDescription(){
+        return "\tInserts text";
     }
 }
 class Save extends Commands {
-    public Save(){
+    Save(){
         super("w");
     }
     public String[] doCommand(){
@@ -100,7 +114,7 @@ class Save extends Commands {
         try {
             FileWriter fw = new FileWriter(fileName);
             BufferedWriter bw = new BufferedWriter(fw);
-            String tempText = this.formattedText;
+            String tempText = formattedText;
             while(tempText.contains("\n")){
                 String line = tempText.substring(0,tempText.indexOf("\n"));
                 bw.write(line);
@@ -112,12 +126,15 @@ class Save extends Commands {
         } catch (IOException e) {
             System.out.println("Error: " + e +"\n-----------------------------------------");
         }
-        String[] returnArr = {this.formattedText, this.iterator + ""};
+        String[] returnArr = {formattedText, iterator + ""};
         return returnArr;
+    }
+    public String getDescription(){
+        return "\tSaves text input";
     }
 }
 class Load extends Commands {
-    public Load() {
+    Load() {
         super("l");
     }
     public String[] doCommand(){
@@ -128,31 +145,37 @@ class Load extends Commands {
             FileInputStream fis = new FileInputStream(fileName);
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
             String line;
-            this.iterator = 1;
-            this.formattedText = "";
+            iterator = 1;
+            formattedText = "";
             while ((line = br.readLine()) != null)   {
-                this.formattedText += line + "\n";
-                this.iterator++;
+                formattedText += line + "\n";
+                iterator++;
             }
             System.out.println("\n\nSuccessfully Loaded.\n-----------------------------------------");
         } catch(IOException e){
             System.out.println("Error: " + e +"\n-----------------------------------------");
         }
-        String[] returnArr = {this.formattedText, this.iterator + ""};
+        String[] returnArr = {formattedText, iterator + ""};
         return returnArr;
+    }
+    public String getDescription(){
+        return "\tLoads a file";
     }
 }
 class WriteQuit extends Commands {
-    public WriteQuit(){
+    WriteQuit(){
         super("wq");
     }
     public String[] doCommand(){
         Save saveFile = new Save();
-        saveFile.setText(this.formattedText);
-        saveFile.setIterator((this.iterator));
+        saveFile.setText(formattedText);
+        saveFile.setIterator((iterator));
         saveFile.doCommand();
         System.exit(0);
-        String[] returnArr = {this.formattedText, this.iterator + ""};
+        String[] returnArr = {formattedText, iterator + ""};
         return returnArr;
+    }
+    public String getDescription(){
+        return "Saves file and quits";
     }
 }
