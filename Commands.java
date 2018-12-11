@@ -30,6 +30,26 @@ public abstract class Commands implements Serializable{
     public String toString(){
        return "\t:" + this.command + "\t\t" + this.getClass().getSimpleName() + "\t\t" + this.getDescription();
     }
+    void saveFile(){
+        System.out.print("Enter file name: ");
+        Scanner sc = new Scanner(System.in);
+        String fileName = sc.nextLine();
+        try {
+            FileWriter fw = new FileWriter(fileName);
+            BufferedWriter bw = new BufferedWriter(fw);
+            String tempText = formattedText;
+            while(tempText.contains("\n")){
+                String line = tempText.substring(0,tempText.indexOf("\n"));
+                bw.write(line);
+                bw.newLine();
+                tempText = tempText.substring(tempText.indexOf("\n") + 1);
+            }
+            System.out.println("\nSuccessfully Saved.\n-----------------------------------------");
+            bw.close();
+        } catch (IOException e) {
+            System.out.println("Error: " + e +"\n-----------------------------------------");
+        }
+    }
 }
 class ForceQuit extends Commands {
     ForceQuit(){
@@ -54,14 +74,14 @@ class Quit extends Commands {
         String opt = sc.next();
         switch(opt.toCharArray()[0]){
             case 'y':
-                WriteQuit wq = new WriteQuit();
-                wq.doCommand();
+                saveFile();
+                System.exit(0);
                 break;
             case 'n':
                 System.exit(0);
                 break;
             default:
-                System.out.println("Not valid reponse, exiting command action.");
+                System.out.println("Not valid response, exiting command action.");
         }
         String[] returnArr = {formattedText, iterator + ""};  //included to prevent compiler error
         return returnArr;
@@ -107,25 +127,7 @@ class Save extends Commands {
         super("w");
     }
     public String[] doCommand(){
-        System.out.print("Enter file name: ");
-        Scanner sc = new Scanner(System.in);
-        String fileName = sc.nextLine();
-
-        try {
-            FileWriter fw = new FileWriter(fileName);
-            BufferedWriter bw = new BufferedWriter(fw);
-            String tempText = formattedText;
-            while(tempText.contains("\n")){
-                String line = tempText.substring(0,tempText.indexOf("\n"));
-                bw.write(line);
-                bw.newLine();
-                tempText = tempText.substring(tempText.indexOf("\n") + 1);
-            }
-            System.out.println("\n\nSuccessfully Saved.\n-----------------------------------------");
-            bw.close();
-        } catch (IOException e) {
-            System.out.println("Error: " + e +"\n-----------------------------------------");
-        }
+        saveFile();
         String[] returnArr = {formattedText, iterator + ""};
         return returnArr;
     }
@@ -167,10 +169,7 @@ class WriteQuit extends Commands {
         super("wq");
     }
     public String[] doCommand(){
-        Save saveFile = new Save();
-        saveFile.setText(formattedText);
-        saveFile.setIterator((iterator));
-        saveFile.doCommand();
+        saveFile();
         System.exit(0);
         String[] returnArr = {formattedText, iterator + ""};
         return returnArr;

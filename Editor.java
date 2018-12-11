@@ -11,7 +11,6 @@ class Editor {
 	private ArrayList<Commands> commands = new ArrayList<>();
 	private int iterator = 1;
 	Editor(){
-		boolean keepGoing = true;
 		System.out.println("Welcome to ViM-proved!");
 		System.out.println("Group:\tJames Fennelly\n\t\tLogan Jones\n\t\tJake Fisher");
 		System.out.println("All available commands are listed in :h\n--------------------------------------------------");
@@ -22,6 +21,10 @@ class Editor {
 		commands.add(new Insert());
 		commands.add(new WriteQuit());
 		commands.add(new ForceQuit());
+		this.insertMode();
+	}
+	public void insertMode(){
+		boolean keepGoing = true;
 		while(keepGoing){
 			String line = getText();
 			if(line.matches(":[A-Za-z!]+")){
@@ -46,7 +49,7 @@ class Editor {
 
 			} else {
 				this.formattedText += line + "\n";
-                this.iterator++;
+				this.iterator++;
 			}
 		}
 	}
